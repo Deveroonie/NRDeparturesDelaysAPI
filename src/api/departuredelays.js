@@ -12,6 +12,7 @@ function updateCache() {
     .catch(function (err) {
         console.log("Failed to update cache", err);
         console.log(cache)
+        updateCache()
     });
 }
 setInterval(() => {
@@ -21,8 +22,9 @@ setInterval(() => {
 updateCache()
 router.get('/:id', (req, res) => {
     const id = req.params.id
+    const limit = req.query.limit
     console.log(id)
-        axios.get(`https://huxley2.azurewebsites.net/departures/${id}`).then(async function(response) {
+        axios.get(`https://huxley2.azurewebsites.net/departures/${id}/${limit}`).then(async function(response) {
             let services = response.data.trainServices
             if(services == null) {
                 res.json({
@@ -54,7 +56,6 @@ router.get('/:id', (req, res) => {
             const isOpDelayed = await findDelays(e.operator);
             if (isOpDelayed === "Delays" && !delayedOperators.includes(e.operator)) {
                 delayedOperators.push(e.operator);
-                console.log(e.operator + " is delayed");
             }
         }));
 
